@@ -1,0 +1,65 @@
+logging:
+  level:
+    root: WARN
+    com:
+      rromanowicz:
+        apicaller: INFO
+
+app:
+  apis:
+    fakeStore:
+      base: "http://localhost:${wiremock.server.port}"
+      users: "/users"
+  request:
+    headers:
+      h1: asd
+      h2: zxc
+      h3: 123
+  logging:
+    enabled:
+      incoming: true
+      outgoing: true
+    payload:
+      incoming:
+        request: true
+        response: true
+      outgoing:
+        request: true
+        response: true
+    masking:
+      outgoing:
+        - url: "/users"
+          request:
+            body:
+              - pattern: "(.*\\\"username\\\":\\\".)(.*?)(.\\\".*)"
+                substitution: "$1***$3"
+              - pattern: "(.*\\\"email\\\":\\\".)(.*?)(.\\\".*)"
+                substitution: "$1***$3"
+              - pattern: "(.*\\\"password\\\":\\\")(.*?)(\\\".*)"
+                substitution: "$1***$3"
+            header:
+              - name: "h1"
+                replacement: ""
+                remove: true
+              - name: "h2"
+                replacement: "***"
+                remove: false
+          response:
+            body:
+              - pattern: "(.*\\\"username\\\":\\\".)(.*?)(.\\\".*)"
+                substitution: "$1***$3"
+              - pattern: "(.*\\\"email\\\":\\\".)(.*?)(.\\\".*)"
+                substitution: "$1***$3"
+              - pattern: "(.*\\\"password\\\":\\\")(.*?)(\\\".*)"
+                substitution: "$1***$3"
+      incoming:
+        - url: "/test"
+          request:
+            body:
+              - pattern: "(.*\\\"username\\\":\\\".)(.*?)(.\\\".*)"
+                substitution: "$1***$3"
+              - pattern: "(.*\\\"email\\\":\\\".)(.*?)(.\\\".*)"
+                substitution: "$1***$3"
+              - pattern: "(.*\\\"password\\\":\\\")(.*?)(\\\".*)"
+                substitution: "$1***$3"
+

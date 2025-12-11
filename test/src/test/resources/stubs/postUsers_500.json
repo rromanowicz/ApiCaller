@@ -1,0 +1,20 @@
+{
+  "request": {
+    "urlPath": "/users",
+    "method": "POST",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": {
+          "expression": "$.id",
+          "contains": "500"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 500,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
