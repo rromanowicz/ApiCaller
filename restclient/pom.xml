@@ -4,18 +4,21 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.rromanowicz</groupId>
+    <groupId>io.github.rromanowicz</groupId>
     <artifactId>apicaller</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <groupId>com.rromanowicz.apicaller</groupId>
+  <groupId>io.github.rromanowicz.apicaller</groupId>
   <artifactId>restclient</artifactId>
   <description>Spring RestClient wrapper</description>
+  <name>${project.groupId}:${project.artifactId}</name>
+
+  <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
-      <groupId>com.rromanowicz.apicaller</groupId>
+      <groupId>io.github.rromanowicz.apicaller</groupId>
       <artifactId>core</artifactId>
     </dependency>
   </dependencies>

@@ -73,7 +73,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = {
     "my.awesome.app",
-    "com.rromanowicz.apicaller"
+    "io.github.rromanowicz.apicaller"
 })
 public class MyAwesomeApplication {
 
@@ -85,7 +85,7 @@ public class MyAwesomeApplication {
 
 ```java
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.rromanowicz.apicaller.core.ApiCaller;
+import io.github.rromanowicz.apicaller.core.ApiCaller;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -130,7 +130,7 @@ public class TestService {
 ```xml
 
 <dependency>
-  <groupId>com.rromanowicz.apicaller</groupId>
+  <groupId>io.github.rromanowicz.apicaller</groupId>
   <artifactId>incoming</artifactId>
   <version>${apiCaller.version}</version>
 </dependency>
@@ -141,7 +141,7 @@ public class TestService {
 ```xml
 
 <dependency>
-  <groupId>com.rromanowicz.apicaller</groupId>
+  <groupId>io.github.rromanowicz.apicaller</groupId>
   <artifactId>restclient</artifactId>
   <version>${apiCaller.version}</version>
 </dependency>
@@ -152,7 +152,7 @@ public class TestService {
 ```xml
 
 <dependency>
-  <groupId>com.rromanowicz.apicaller</groupId>
+  <groupId>io.github.rromanowicz.apicaller</groupId>
   <artifactId>unirest</artifactId>
   <version>${apiCaller.version}</version>
 </dependency>

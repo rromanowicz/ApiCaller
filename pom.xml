@@ -9,23 +9,38 @@
     <version>3.5.8</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
-  <groupId>com.rromanowicz</groupId>
+
+  <groupId>io.github.rromanowicz</groupId>
   <artifactId>apicaller</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+
   <packaging>pom</packaging>
-  <name>apicaller</name>
-  <description>Universal REST client wrapper</description>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>Collection of REST client wrappers with built-in logging</description>
+  <url>https://github.com/rromanowicz/ApiCaller</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
 
   <developers>
     <developer>
-      <id>rromanowicz</id>
       <name>Robert Romanowicz</name>
-      <email>rromanowicz@pm.me</email>
-      <roles>
-        <role>developer</role>
-      </roles>
+      <email>rromanowicz@hotmail.com</email>
+      <organization>rromanowicz</organization>
+      <organizationUrl>https://github.com/rromanowicz</organizationUrl>
     </developer>
   </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/rromanowicz/ApiCaller.git</connection>
+    <developerConnection>scm:git:ssh://github.com:rromanowicz/ApiCaller.git</developerConnection>
+    <url>http://github.com/rromanowicz/ApiCaller/tree/master</url>
+  </scm>
 
   <modules>
     <module>common</module>
@@ -50,37 +65,37 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.rromanowicz.apicaller</groupId>
+        <groupId>io.github.rromanowicz.apicaller</groupId>
         <artifactId>core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.rromanowicz.apicaller</groupId>
+        <groupId>io.github.rromanowicz.apicaller</groupId>
         <artifactId>restclient</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.rromanowicz.apicaller</groupId>
+        <groupId>io.github.rromanowicz.apicaller</groupId>
         <artifactId>unirest</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.rromanowicz.apicaller</groupId>
+        <groupId>io.github.rromanowicz.apicaller</groupId>
         <artifactId>webclient</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.rromanowicz.apicaller</groupId>
+        <groupId>io.github.rromanowicz.apicaller</groupId>
         <artifactId>common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.rromanowicz.apicaller</groupId>
+        <groupId>io.github.rromanowicz.apicaller</groupId>
         <artifactId>test</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.rromanowicz.apicaller</groupId>
+        <groupId>io.github.rromanowicz.apicaller</groupId>
         <artifactId>incoming</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -108,5 +123,65 @@
       <version>2.20.0</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>0.9.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <checksums>all</checksums>
+          <publishingServerId>central</publishingServerId>
+          <autoPublish>true</autoPublish>
+          <skipPublishing>true</skipPublishing>
+          <excludeArtifacts>
+            <artifactId>test</artifactId>
+          </excludeArtifacts>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
