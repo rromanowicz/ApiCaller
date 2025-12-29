@@ -4,8 +4,6 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-//@Configuration
-//@ConfigurationProperties("app.logging")
 public class LoggingConfig {
 
   private Enabled enabled;

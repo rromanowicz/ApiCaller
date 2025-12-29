@@ -4,10 +4,12 @@ import static io.github.rromanowicz.apicaller.common.Model.Direction.OUTGOING;
 import static io.github.rromanowicz.apicaller.common.Model.Type.REQUEST;
 import static io.github.rromanowicz.apicaller.common.Model.Type.RESPONSE;
 import static io.github.rromanowicz.apicaller.common.Util.asObject;
+import static java.util.Objects.nonNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.github.rromanowicz.apicaller.common.MaskingService;
 import io.github.rromanowicz.apicaller.common.Model.ApiHeader;
+import io.github.rromanowicz.apicaller.common.Model.ErrorResponse;
 import io.github.rromanowicz.apicaller.common.Model.OutgoingLog;
 import io.github.rromanowicz.apicaller.common.Model.RequestLog;
 import io.github.rromanowicz.apicaller.common.Model.ResponseLog;
@@ -56,21 +58,27 @@ public class LoggingInterceptor implements ClientHttpRequestInterceptor {
 
   private <T> ResponseLog parseResponse(ClientHttpResponse response, byte[] body,
       TypeReference<T> respType, String requestUri) {
-    log.debug("[{}] - Processing response body.", requestUri);
-    Integer statusCode;
+    log.debug("[{}] - Processing response errorBody.", requestUri);
+    HttpStatusCode statusCode;
+    var res = ResponseLog.builder();
     try {
-      statusCode = response.getStatusCode().value();
+      statusCode = response.getStatusCode();
+      res.status(statusCode.value());
     } catch (IOException e) {
       statusCode = null;
     }
-    return ResponseLog.builder()
-        .status(statusCode)
-        .body(maskingService.maskBody(requestUri, RESPONSE, OUTGOING, asObject(body, respType)))
-        .build();
+
+    if (nonNull(statusCode) && statusCode.is2xxSuccessful()) {
+      res.body(maskingService.maskBody(requestUri, RESPONSE, OUTGOING, asObject(body, respType)));
+    } else {
+      res.body(ErrorResponse.builder().errorBody(new String(body)).build());
+    }
+
+    return res.build();
   }
 
   private RequestLog parseRequest(HttpRequest request, byte[] body) {
-    log.debug("[{}] - Processing request body.", request.getURI());
+    log.debug("[{}] - Processing request errorBody.", request.getURI());
     return RequestLog.builder()
         .method(request.getMethod().toString())
         .url(request.getURI().toString())

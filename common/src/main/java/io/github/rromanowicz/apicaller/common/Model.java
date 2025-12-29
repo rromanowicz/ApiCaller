@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Collection;
 import java.util.List;
 import lombok.Builder;
+import org.apache.commons.lang3.reflect.TypeUtils;
 
 public interface Model {
 
@@ -72,12 +73,21 @@ public interface Model {
   record ResponseLog(Integer status, Object body) {
 
     ResponseLog asJsonString() {
-      return ResponseLog.builder()
-          .status(this.status)
-          .body(nonNull(body) ? asObject((String) this.body, new TypeReference<>() {
-          }) : null)
-          .build();
+      var log = ResponseLog.builder()
+          .status(this.status);
+      if (TypeUtils.isInstance(body, ErrorResponse.class)) {
+        log.body(body);
+      } else {
+        log.body(nonNull(body) ? asObject((String) this.body, new TypeReference<>() {
+        }) : null);
+      }
+      return log.build();
     }
+  }
+
+  @Builder
+  record ErrorResponse(String errorBody) {
+
   }
 
   @Builder

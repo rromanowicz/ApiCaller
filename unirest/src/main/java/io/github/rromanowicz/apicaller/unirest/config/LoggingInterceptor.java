@@ -9,6 +9,7 @@ import static java.util.Objects.nonNull;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.rromanowicz.apicaller.common.MaskingService;
 import io.github.rromanowicz.apicaller.common.Model.ApiHeader;
+import io.github.rromanowicz.apicaller.common.Model.ErrorResponse;
 import io.github.rromanowicz.apicaller.common.Model.OutgoingLog;
 import io.github.rromanowicz.apicaller.common.Model.RequestLog;
 import io.github.rromanowicz.apicaller.common.Model.ResponseLog;
@@ -20,6 +21,7 @@ import kong.unirest.core.Interceptor;
 import kong.unirest.core.UnirestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatusCode;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -53,16 +55,22 @@ public class LoggingInterceptor implements Interceptor {
   }
 
   private ResponseLog parseResponse(HttpResponse<?> response) {
-    log.debug("[{}] - Processing response body.", response.getRequestSummary().getUrl());
-    return ResponseLog.builder()
-        .status(response.getStatus())
-        .body(maskingService.maskBody(response.getRequestSummary().getUrl(), RESPONSE, OUTGOING,
-            response.getBody()))
-        .build();
+    log.debug("[{}] - Processing response errorBody.", response.getRequestSummary().getUrl());
+    var res = ResponseLog.builder()
+        .status(response.getStatus());
+    if (nonNull(response.getBody())) {
+      if (HttpStatusCode.valueOf(response.getStatus()).is2xxSuccessful()) {
+        res.body(maskingService.maskBody(response.getRequestSummary().getUrl(), RESPONSE, OUTGOING,
+            response.getBody()));
+      } else {
+        res.body(ErrorResponse.builder().errorBody(response.getBody().toString()).build());
+      }
+    }
+    return res.build();
   }
 
   private RequestLog parseRequest(HttpRequestSummary request) {
-    log.debug("[{}] - Processing request body.", request.getUrl());
+    log.debug("[{}] - Processing request errorBody.", request.getUrl());
     String[] mainSplit = request.asString().split("={5,}");
     String parsedRequest = mainSplit.length > 1 ? formatRequestBody(mainSplit[1]) : null;
     if (nonNull(parsedRequest)) {
@@ -70,7 +78,7 @@ public class LoggingInterceptor implements Interceptor {
         Object value = OBJECT_MAPPER.readValue(parsedRequest, Object.class);
         parsedRequest = OBJECT_MAPPER.writeValueAsString(value);
       } catch (JsonProcessingException e) {
-        log.warn("Failed to parse request body as {}. [{}]", parsedRequest, e.getMessage());
+        log.warn("Failed to parse request errorBody as {}. [{}]", parsedRequest, e.getMessage());
       }
     }
     return RequestLog.builder()

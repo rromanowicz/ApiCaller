@@ -27,6 +27,15 @@ public class MaskingService {
 
   private final LoggingConfig loggingConfig;
 
+  /**
+   * Mask errorBody for log entry.
+   *
+   * @param requestUrl Url of the request to find appropriate mask
+   * @param type       Type (Request / Response)
+   * @param direction  Direction (Incoming / Outgoing)
+   * @param body       {@code Object} errorBody to mask.
+   * @return Masked {@code String}
+   */
   public String maskBody(String requestUrl, Type type, Direction direction, Object body) {
     if (isNull(body)) {
       return null;
@@ -44,6 +53,20 @@ public class MaskingService {
           })
           .orElse(writeAsString(body));
     }
+  }
+
+  /**
+   * Mask headers
+   *
+   * @param requestUrl Url of the request to find appropriate mask
+   * @param headers    Collection of {@code ApiHeader} to mask.
+   * @return Masked headers
+   * @see ApiHeader
+   */
+  public List<ApiHeader> maskHeaders(String requestUrl, Collection<ApiHeader> headers) {
+    return getOutgoingConfig(requestUrl)
+        .map(it -> applyHeaderMask(headers, it.getRequest().getHeader()))
+        .orElse(headers.stream().toList());
   }
 
   private String applyStringMask(String body, Collection<BodyMask> masks) {
@@ -91,24 +114,17 @@ public class MaskingService {
     return result;
   }
 
-  public List<ApiHeader> maskHeaders(String requestUrl, Collection<ApiHeader> headers) {
-    return getOutgoingConfig(requestUrl)
-        .map(it -> applyHeaderMask(headers, it.getRequest().getHeader()))
-        .orElse(headers.stream().toList());
-  }
-
   private List<ApiHeader> applyHeaderMask(Collection<ApiHeader> headers,
       Collection<HeaderMask> masks) {
     List<ApiHeader> result = new ArrayList<>();
     headers.forEach(header -> masks.stream().filter(mask -> header.name().equals(mask.getName()))
         .findFirst()
         .ifPresentOrElse(it -> {
-              if (!it.isRemove()) {
-                result.add(ApiHeader.builder().name(header.name()).value(it.getReplacement()).build());
-              }
-            },
-            () -> result.add(header)
-        ));
+          if (!it.isRemove()) {
+            result.add(ApiHeader.builder().name(header.name()).value(it.getReplacement()).build());
+          }
+        },
+            () -> result.add(header)));
     return result;
   }
 

@@ -37,13 +37,13 @@ public class RestClientConfig {
   private ErrorHandler errorHandler() {
     return (request, response) -> {
       if (response.getStatusCode().is5xxServerError()) {
-        throw new Api5xxException(request.getURI().toString());
+        throw new Api5xxException(new String(response.getBody().readAllBytes()));
       } else if (response.getStatusCode().is4xxClientError()) {
-        throw new Api4xxException(request.getURI().toString());
+        throw new Api4xxException(new String(response.getBody().readAllBytes()));
       } else if (response.getStatusCode().is3xxRedirection()) {
-        throw new Api3xxException(request.getURI().toString());
+        throw new Api3xxException(new String(response.getBody().readAllBytes()));
       } else {
-        throw new ApiCallerException(request.getURI().toString());
+        throw new ApiCallerException(new String(response.getBody().readAllBytes()));
       }
     };
   }

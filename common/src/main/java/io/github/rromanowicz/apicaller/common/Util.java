@@ -32,7 +32,7 @@ public class Util {
           new TypeReference<T>() {
           }));
     } catch (JsonProcessingException e) {
-      log.warn("Failed to parse String body [{}] to type [{}].\n{}", body,
+      log.warn("Failed to parse String errorBody [{}] to type [{}].\n{}", body,
           valueType.getTypeName(), e.getMessage());
       return null;
     }
@@ -47,7 +47,7 @@ public class Util {
           new TypeReference<T>() {
           }));
     } catch (IOException e) {
-      log.warn("Failed to parse byte[] body [{}] to type [{}].\n{}", body,
+      log.warn("Failed to parse byte[] errorBody [{}] to type [{}].\n{}", body,
           valueType.getTypeName(), e.getMessage());
       return null;
     }
@@ -57,7 +57,7 @@ public class Util {
     try {
       return OBJECT_MAPPER.writeValueAsString(body);
     } catch (IOException e) {
-      log.warn("Failed to parse Object body [{}] as String.\n{}", body, e.getMessage());
+      log.warn("Failed to parse Object errorBody [{}] as String.\n{}", body, e.getMessage());
       return null;
     }
   }
@@ -69,7 +69,7 @@ public class Util {
     try {
       return OBJECT_MAPPER.readValue(body, valueType);
     } catch (JsonProcessingException e) {
-      log.warn("Failed to parse String body [{}] to typeRef [{}].\n{}", body,
+      log.warn("Failed to parse String errorBody [{}] to typeRef [{}].\n{}", body,
           valueType.getType().getTypeName(), e.getMessage());
       return null;
     }
@@ -82,7 +82,7 @@ public class Util {
     try {
       return OBJECT_MAPPER.readValue(body, valueType);
     } catch (IOException e) {
-      log.warn("Failed to parse byte[] body [{}] to typeRef [{}].\n{}", body,
+      log.warn("Failed to parse byte[] errorBody [{}] to typeRef [{}].\n{}", body,
           valueType.getType().getTypeName(), e.getMessage());
       return null;
     }

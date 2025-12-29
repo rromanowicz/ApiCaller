@@ -1,2 +1,8 @@
 .idea
 */target
+
+.zed
+.settings
+.classpath
+.factorypath
+.project

@@ -1,7 +1,9 @@
 package io.github.rromanowicz.apicaller.core.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.rromanowicz.apicaller.common.LoggingConfig;
 import io.github.rromanowicz.apicaller.common.MaskingService;
+import io.github.rromanowicz.apicaller.common.Util;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -28,5 +30,10 @@ public class ApiCallerConfig {
   @Bean
   public MaskingService maskingService() {
     return new MaskingService(loggingConfig());
+  }
+
+  @Bean
+  public ObjectMapper objectMapper() {
+    return Util.OBJECT_MAPPER;
   }
 }

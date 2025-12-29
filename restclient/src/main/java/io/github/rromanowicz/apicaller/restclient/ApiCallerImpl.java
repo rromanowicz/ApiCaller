@@ -49,19 +49,36 @@ public class ApiCallerImpl implements ApiCaller {
   @Override
   public <T> T patch(@NonNull URI uri, @NonNull Object body, @NonNull Map<String, String> headers,
       TypeReference<T> typeRef, @NonNull String client) {
-    return null;
+    return restClient.patch()
+        .uri(uri)
+        .body(body)
+        .headers(httpHeaders -> headers.forEach(httpHeaders::add))
+        .attributes(attrs -> attrs.putAll(Map.of(RESP_TYPE, typeRef, CLIENT_NAME, client)))
+        .retrieve()
+        .body(ParameterizedTypeReference.forType(typeRef.getType()));
   }
 
   @Override
   public <T> T put(@NonNull URI uri, @NonNull Object body, @NonNull Map<String, String> headers,
       TypeReference<T> typeRef, @NonNull String client) {
-    return null;
+    return restClient.put()
+        .uri(uri)
+        .body(body)
+        .headers(httpHeaders -> headers.forEach(httpHeaders::add))
+        .attributes(attrs -> attrs.putAll(Map.of(RESP_TYPE, typeRef, CLIENT_NAME, client)))
+        .retrieve()
+        .body(ParameterizedTypeReference.forType(typeRef.getType()));
   }
 
   @Override
   public ResponseEntity<Void> delete(@NonNull URI uri, @NonNull Map<String, String> headers,
       @NonNull String client) {
-    return null;
+    return restClient.delete()
+        .uri(uri)
+        .headers(httpHeaders -> headers.forEach(httpHeaders::add))
+        .attributes(attrs -> attrs.put(CLIENT_NAME, client))
+        .retrieve()
+        .toBodilessEntity();
   }
 
 }
